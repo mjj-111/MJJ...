@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>天气 · Weather</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/qweather-icons@1.6.0/font/qweather-icons.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>
+    </symbol>
+    <symbol id="i-locate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" opacity=".45"/>
+    </symbol>
+    <symbol id="i-wind" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M3 8h10a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7a2.5 2.5 0 1 1-2.5 2.5"/>
+    </symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+      <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>
+    </symbol>
+    <symbol id="i-rain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 14a5 5 0 1 1 1-9.9A6 6 0 0 1 18.5 6 4 4 0 0 1 18 14H6z"/><path d="M8 17l-1 3M13 17l-1 3M18 17l-1 3"/>
+    </symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M4 18a8.5 8.5 0 1 1 16 0"/><path d="M12 18l4-6"/><circle cx="12" cy="18" r="1.4" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+      <path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/>
+    </symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+      <path d="M6 18a4.5 4.5 0 1 1 .8-8.9A6 6 0 0 1 18.3 11 3.7 3.7 0 0 1 17.5 18H6z"/>
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/>
+    </symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/>
+    </symbol>
+  </svg>
+
+  <div class="bg-decor"></div>
+
+  <main class="app">
+    <!-- 顶部搜索栏 -->
+    <header class="topbar">
+      <div class="brand"><i class="qi-sunny-fill"></i> 天气</div>
+      <div class="search-box">
+        <svg class="search-icon"><use href="#i-search"/></svg>
+        <input id="searchInput" type="text" placeholder="搜索城市，如：北京、上海、Tokyo…" autocomplete="off" />
+        <ul id="suggestList" class="suggest-list hidden"></ul>
+      </div>
+      <button id="locateBtn" class="locate-btn" title="使用我的位置">
+        <svg class="btn-icon"><use href="#i-locate"/></svg>
+      </button>
+    </header>
+
+    <!-- 加载 / 错误提示 -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- 当前天气卡片 -->
+    <section id="currentCard" class="current-card">
+      <div class="current-left">
+        <div class="city-line">
+          <h2 id="cityName">--</h2>
+          <span id="cityAdm" class="city-adm"></span>
+        </div>
+        <p id="obsTime" class="obs-time"></p>
+        <div class="temp-line">
+          <span id="nowTemp" class="now-temp">--</span><span class="deg">°</span>
+          <div class="now-desc">
+            <i id="nowIcon" class="qi-999 now-icon"></i>
+            <span id="nowText">--</span>
+          </div>
+        </div>
+        <p id="feelsLike" class="feels-like"></p>
+      </div>
+      <div class="current-right">
+        <div class="metric"><svg class="m-icon"><use href="#i-wind"/></svg><span id="mWind">--</span><label>风向风速</label></div>
+        <div class="metric"><svg class="m-icon"><use href="#i-drop"/></svg><span id="mHumidity">--</span><label>相对湿度</label></div>
+        <div class="metric"><svg class="m-icon"><use href="#i-rain"/></svg><span id="mPrecip">--</span><label>降水量</label></div>
+        <div class="metric"><svg class="m-icon"><use href="#i-gauge"/></svg><span id="mPressure">--</span><label>气压 hPa</label></div>
+        <div class="metric"><svg class="m-icon"><use href="#i-eye"/></svg><span id="mVis">--</span><label>能见度 km</label></div>
+        <div class="metric"><svg class="m-icon"><use href="#i-cloud"/></svg><span id="mCloud">--</span><label>云量 %</label></div>
+      </div>
+    </section>
+
+    <!-- 24 小时预报 -->
+    <section class="panel">
+      <h3 class="panel-title"><svg class="t-icon"><use href="#i-clock"/></svg> 24 小时预报</h3>
+      <div id="hourlyStrip" class="hourly-strip"></div>
+    </section>
+
+    <!-- 7 天预报 -->
+    <section class="panel">
+      <h3 class="panel-title"><svg class="t-icon"><use href="#i-cal"/></svg> 未来 7 天</h3>
+      <div id="dailyList" class="daily-list"></div>
+    </section>
+
+    <footer class="footer">数据来源：和风天气 QWeather</footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
